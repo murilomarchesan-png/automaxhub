@@ -137,7 +137,7 @@ VPS Hostinger com Docker Swarm, Traefik (TLS/roteamento), Portainer, n8n, Evolut
 | `pc-etl` | build próprio (Python 3.12 + GDAL) | jobs de carga; roda sob demanda/agendado (replicas 0 fora da execução) |
 
 Rede:
-- Colocar os serviços novos **também na rede overlay em que o n8n já está** (descobrir com `docker network ls` / `docker service inspect`). Assim o n8n alcança `pc-db`, `pc-gotenberg` e `pc-web` sem alterar o serviço do n8n.
+- Colocar os serviços novos **também na rede overlay `AutomaxHubNet`**, em que o n8n já está. Assim o n8n alcança `pc-db`, `pc-gotenberg` e `pc-web` sem alterar o serviço do n8n.
 - Só o `pc-web` é exposto pelo Traefik (copiar o padrão de labels e certresolver dos serviços existentes).
 - `pc-db` e `pc-gotenberg` **sem** porta publicada.
 
@@ -146,7 +146,7 @@ Rede:
 ```
 [pc-web] usuário confirma
    → transação: debita 1 crédito + cria app.analises (status='pendente')
-   → POST http://n8n:5678/webhook/pc-analise  {analise_id}   header X-PC-Secret
+   → POST http://n8n_n8n_webhook:5678/webhook/pc-analise  {analise_id}   header X-PC-Secret
 [n8n]  PC — Analise
    → carrega análise + tipo → geocode (se faltar) → funções PostGIS
    → Google Places (concorrentes + avaliações) → Overpass (transporte, via, âncoras)
@@ -506,7 +506,7 @@ create table app.assinaturas (
 
 ### 6.1 Entrada
 
-`POST http://n8n:5678/webhook/pc-analise` · header `X-PC-Secret` · body `{ "analise_id": "<uuid>" }`. Responder `202` imediatamente e processar em seguida.
+`POST http://n8n_n8n_webhook:5678/webhook/pc-analise` · header `X-PC-Secret` · body `{ "analise_id": "<uuid>" }`. Responder `202` imediatamente e processar em seguida.
 
 ### 6.2 Workflow `PC — Analise` (etapas)
 

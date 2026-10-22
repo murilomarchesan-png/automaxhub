@@ -26,6 +26,10 @@ Plataforma de análise de ponto comercial: endereço + tipo de negócio → rela
 
 ## Infra conhecida
 VPS Hostinger KVM 4 (`srv1308006.hstgr.cloud`): 15 GiB RAM (~13 GiB livres em out/2026), 193 GB de disco (182 GB livres), sem swap. `pc-db` sempre com limite de memória/CPU no `stack.yml`; cargas pesadas de madrugada.
+- Rede overlay compartilhada: **`AutomaxHubNet`** (external no `stack.yml` do `pontocerto`).
+- n8n em **queue mode**: serviços `n8n_n8n_editor`, `n8n_n8n_webhook`, `n8n_n8n_worker` (+ `n8n_n8n_redis`). Editor e worker com limite de 1 GiB → evitar payloads grandes em memória nos workflows `PC — `.
+- Webhook interno do n8n: `http://n8n_n8n_webhook:5678/webhook/...` (a SPEC antiga dizia `http://n8n:5678`).
+- Outros serviços existentes (não tocar): `evolution_evolution_api`, `evolution_evolution_redis`, `postgres17_postgres17` (limite 1 GiB), `traefik_traefik`, `portainer_agent`.
 
 ## Ao terminar cada fase
 Entregar um resumo curto: o que foi feito, como testar, pendências, decisões tomadas e divergências encontradas com a SPEC.
